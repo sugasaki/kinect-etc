@@ -27,6 +27,8 @@ namespace KinectExile
         private KinectExile.Models.RingBuffer ringbuf;
 
         private const int BytesPerPixel = 4;
+        private const int max_player = 3;
+
         #region field
 
         private KinectSensor kinectDevice;
@@ -283,7 +285,7 @@ namespace KinectExile
 
             int frame = 15; //15frame=0.5sec
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < max_player; i++)
             {
                 int iframe = i == 0 ? ringbuf.buffer_index : ringbuf.buffer_index - (frame * i);
 
