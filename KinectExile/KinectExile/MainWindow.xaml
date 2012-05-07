@@ -1,0 +1,24 @@
+﻿<Window x:Class="KinectExile.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525" Closed="Window_Closed" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0" />
+            <RowDefinition Height="213*" />
+        </Grid.RowDefinitions>
+
+
+        <StackPanel Grid.Row="0" HorizontalAlignment="Left" Name="stackPanel2" Orientation="Horizontal">
+            <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="button1" VerticalAlignment="Top" Width="75" />
+            <Button Content="End" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="button2" VerticalAlignment="Top" Width="75" />
+            <Button Content="End" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="button3" VerticalAlignment="Top" Width="75" />
+            <TextBlock Text="{Binding ListSize}" FontSize="16" Width="300" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" >
+            <Image Name="room_image" Margin="0" Stretch="Uniform" Source="{Binding Room_Bitmap}"  />
+            <Image Name="human_image1" Stretch="Uniform" Source="{Binding Human_image1_bitmap}" />
+        </Grid>
+    </Grid>
+</Window>
