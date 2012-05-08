@@ -27,7 +27,8 @@ namespace KinectExile
         private KinectExile.Models.RingBuffer ringbuf;
 
         private const int BytesPerPixel = 4;
-        private const int max_player = 3;
+        private const int max_player = 7; //分身の数
+        private const int buff_sec = 4;　//*秒分のバッファ領域を作成する
 
         #region field
 
@@ -50,7 +51,6 @@ namespace KinectExile
 
         #region プロパティ
 
-        private WriteableBitmap _room_bitmap;
         private WriteableBitmap _overray_bitmap;
 
 
@@ -93,7 +93,7 @@ namespace KinectExile
                 kinectDevice = KinectSensor.KinectSensors.FirstOrDefault(x => x.Status == KinectStatus.Connected);
                 if (kinectDevice == null) return false;
 
-                kinectDevice.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+                kinectDevice.DepthStream.Enable(DepthImageFormat.Resolution320x240Fps30);
                 kinectDevice.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
                 kinectDevice.SkeletonStream.Enable();
 
@@ -105,13 +105,12 @@ namespace KinectExile
 
 
                 //Bitmap初期化
-                _room_bitmap = new WriteableBitmap(depthStream.FrameWidth, depthStream.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
                 _overray_bitmap = new WriteableBitmap(depthStream.FrameWidth, depthStream.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
-                _screenImageRect = new Int32Rect(0, 0, (int)Math.Ceiling(_room_bitmap.Width), (int)Math.Ceiling(_room_bitmap.Height));
+                _screenImageRect = new Int32Rect(0, 0, (int)Math.Ceiling(_overray_bitmap.Width), (int)Math.Ceiling(_overray_bitmap.Height));
 
                 //リングバッファの初期化
                 ringbuf = new Models.RingBuffer();
-                ringbuf.init_ringbuffer(3, kinectDevice.ColorStream.FramePixelDataLength, kinectDevice.DepthStream.FramePixelDataLength, out ret_message);
+                ringbuf.init_ringbuffer(buff_sec, kinectDevice.ColorStream.FramePixelDataLength, kinectDevice.DepthStream.FramePixelDataLength, out ret_message);
 
 
                 //kinectDevice.AllFramesReady += kinect_AllFramesReady;
@@ -287,10 +286,10 @@ namespace KinectExile
 
             for (int i = 0; i < max_player; i++)
             {
-                int iframe = i == 0 ? ringbuf.buffer_index : ringbuf.buffer_index - (frame * i);
+                int iframe = i == 0 ? ringbuf.buffer_index : ringbuf.buffer_index + (frame * i-1);
 
                 var colorPixelData = ringbuf.get_rgb_frame(iframe);
-                var depthPixel = ringbuf.get_depth_length(iframe);
+                //var depthPixel = ringbuf.get_depth_length(iframe);
                 var PlayerIndex = ringbuf.get_PlayerIndexData(iframe);
                 if (colorPixelData == null) continue;
 
